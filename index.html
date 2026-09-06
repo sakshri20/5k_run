@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dawn Run 5K</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  :root{
+    --paper:#F5F4EE; --card:#FFFFFF; --ink:#17211C; --ink-soft:#495049;
+    --line:#E1E0D6; --line-soft:#ECEBE2;
+    --pine:#1E5C4B; --pine-deep:#123A2F; --pine-soft:#EAF1EC;
+    --amber:#E08A2B; --amber-soft:#FBEEDB;
+    --go:#3E8E5F; --go-soft:#E7F1E9;
+    --rest:#8A7EA8; --rest-soft:#F0EDF5;
+    --race:#D14B3C; --race-soft:#FBE7E2;
+    --ring-track:#E4E3D9;
+    --shadow:0 1px 2px rgba(20,33,28,.05),0 8px 24px -12px rgba(20,33,28,.14);
+  }
+  :root:not([data-theme="light"]){ }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0E1512; --card:#152019; --ink:#EAF0EA; --ink-soft:#9BA99F;
+      --line:#243029; --line-soft:#1D2822;
+      --pine:#5FBF9E; --pine-deep:#3E8E75; --pine-soft:#16261F;
+      --amber:#F0A84B; --amber-soft:#2A2014;
+      --go:#5FBF83; --go-soft:#16261C;
+      --rest:#AFA2CE; --rest-soft:#201B2C;
+      --race:#F0705F; --race-soft:#2C1713;
+      --ring-track:#243029;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1512; --card:#152019; --ink:#EAF0EA; --ink-soft:#9BA99F;
+    --line:#243029; --line-soft:#1D2822;
+    --pine:#5FBF9E; --pine-deep:#3E8E75; --pine-soft:#16261F;
+    --amber:#F0A84B; --amber-soft:#2A2014;
+    --go:#5FBF83; --go-soft:#16261C;
+    --rest:#AFA2CE; --rest-soft:#201B2C;
+    --race:#F0705F; --race-soft:#2C1713;
+    --ring-track:#243029;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Hanken Grotesk",system-ui,sans-serif;
+    line-height:1.5;font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  h1,h2,h3{margin:0}
+  a{color:inherit}
+  button{font-family:inherit}
+
+  .display{font-family:"Anton",Impact,sans-serif;font-weight:400;letter-spacing:.01em;text-transform:uppercase;line-height:.95}
+  .mono{font-family:"Space Mono",ui-monospace,monospace}
+  .eyebrow{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
+
+  /* ---- Top bar ---- */
+  .topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar-in{display:flex;align-items:center;gap:16px;padding:12px 20px;max-width:1120px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px var(--amber-soft)}
+  .brand b{font-family:"Anton",sans-serif;font-weight:400;letter-spacing:.03em;text-transform:uppercase;font-size:1.05rem}
+  .mini-count{display:flex;align-items:baseline;gap:6px}
+  .mini-count .n{font-family:"Space Mono",monospace;font-weight:700;font-size:1.05rem;color:var(--pine)}
+  .mini-count .l{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+  .theme-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:1rem;display:grid;place-items:center}
+  .theme-btn:hover{border-color:var(--pine)}
+  nav.tabs{display:flex;gap:4px;overflow-x:auto;padding:6px 20px 0;max-width:1120px;margin:0 auto;-ms-overflow-style:none;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  .tab{border:0;background:transparent;color:var(--ink-soft);padding:9px 14px;font-weight:600;font-size:.9rem;cursor:pointer;border-radius:9px 9px 0 0;white-space:nowrap;border-bottom:2px solid transparent}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--amber)}
+  .tab:hover{color:var(--ink)}
+
+  /* ---- Hero ---- */
+  .hero{padding:44px 0 30px;border-bottom:1px solid var(--line)}
+  .hero-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:36px;align-items:center}
+  .hero h1{font-size:clamp(2.6rem,6vw,4.6rem);text-wrap:balance}
+  .hero h1 .amber{color:var(--amber)}
+  .hero .sub{margin-top:14px;color:var(--ink-soft);max-width:46ch;font-size:1.05rem}
+  .hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow)}
+  .chip .k{color:var(--ink-soft);font-weight:500}
+  .countbox{background:var(--pine-deep);color:#fff;border-radius:18px;padding:26px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .countbox::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 80% -10%,rgba(224,138,43,.35),transparent 60%);pointer-events:none}
+  .countbox .lab{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;opacity:.8;font-weight:700}
+  .countbox .big{font-family:"Anton",sans-serif;font-size:5rem;line-height:.9;margin:6px 0 2px;color:#fff}
+  .countbox .days{font-size:.85rem;opacity:.85;letter-spacing:.1em;text-transform:uppercase}
+  .countbox .date{margin-top:14px;font-family:"Space Mono",monospace;font-size:.85rem;opacity:.9;border-top:1px solid rgba(255,255,255,.18);padding-top:12px}
+
+  /* ---- Progress dashboard ---- */
+  .dash{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;padding:26px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin:26px 0}
+  .ring{position:relative;width:132px;height:132px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring .pct b{font-family:"Anton",sans-serif;font-size:2.1rem;display:block;line-height:1}
+  .ring .pct span{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .stat .v{font-family:"Space Mono",monospace;font-weight:700;font-size:1.7rem;color:var(--pine)}
+  .stat .k{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+  .stat .bar{height:6px;border-radius:99px;background:var(--ring-track);margin-top:9px;overflow:hidden}
+  .stat .bar i{display:block;height:100%;background:var(--amber);border-radius:99px}
+
+  section.panel{display:none;padding:12px 0 60px}
+  section.panel.active{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:30px 0 16px}
+  .sec-head h2{font-family:"Anton",sans-serif;font-weight:400;font-size:1.9rem;letter-spacing:.02em;text-transform:uppercase}
+  .sec-head p{color:var(--ink-soft);font-size:.92rem;margin:4px 0 0;max-width:52ch}
+
+  /* ---- Week cards ---- */
+  .weeks{display:grid;gap:18px}
+  .week{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .week.now{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),var(--shadow)}
+  .week-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line-soft);cursor:pointer;user-select:none}
+  .week-num{font-family:"Anton",sans-serif;font-size:1.5rem;color:var(--pine);min-width:2ch}
+  .week-title b{font-size:1rem}
+  .week-title small{display:block;color:var(--ink-soft);font-size:.8rem;font-family:"Space Mono",monospace}
+  .week-phase{margin-left:auto;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:var(--pine-soft);color:var(--pine)}
+  .week-now-flag{font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);background:var(--amber-soft);padding:5px 10px;border-radius:999px}
+  .wprog{font-family:"Space Mono",monospace;font-size:.8rem;color:var(--ink-soft);white-space:nowrap}
+  .caret{transition:transform .25s;color:var(--ink-soft)}
+  .week.open .caret{transform:rotate(90deg)}
+  .days{display:none}
+  .week.open .days{display:block}
+  .day{display:flex;align-items:flex-start;gap:14px;padding:13px 20px;border-top:1px solid var(--line-soft)}
+  .day:first-child{border-top:0}
+  .day.today{background:var(--amber-soft)}
+  .dcheck{flex:none;margin-top:2px}
+  .dcheck input{position:absolute;opacity:0;width:0;height:0}
+  .dcheck label{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;border:2px solid var(--line);cursor:pointer;transition:.15s;color:#fff}
+  .dcheck label:hover{border-color:var(--go)}
+  .dcheck input:checked+label{background:var(--go);border-color:var(--go)}
+  .dcheck input:focus-visible+label{outline:2px solid var(--pine);outline-offset:2px}
+  .dcheck label svg{opacity:0;transition:.15s}
+  .dcheck input:checked+label svg{opacity:1}
+  .dbody{flex:1;min-width:0}
+  .dday{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+  .dtag{font-size:.62rem;letter-spacing:.06em;padding:2px 7px;border-radius:999px;font-weight:700}
+  .t-run{background:var(--pine-soft);color:var(--pine)}
+  .t-strength{background:var(--amber-soft);color:var(--amber)}
+  .t-rest{background:var(--rest-soft);color:var(--rest)}
+  .t-cross{background:var(--go-soft);color:var(--go)}
+  .t-race{background:var(--race-soft);color:var(--race)}
+  .dtitle{font-weight:600;margin-top:3px}
+  .ddesc{color:var(--ink-soft);font-size:.86rem;margin-top:2px}
+  .day.done .dtitle{text-decoration:line-through;text-decoration-color:var(--ink-soft);opacity:.6}
+
+  /* ---- Info cards (nutrition / sleep / race) ---- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .infocard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
+  .infocard h3{font-size:1.05rem;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .infocard h3 .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--pine-soft);color:var(--pine)}
+  .infocard ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+  .infocard li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+  .infocard li b{color:var(--ink);font-weight:600}
+  .infocard li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:7px}
+  .callout{background:var(--pine-soft);border:1px solid color-mix(in srgb,var(--pine) 25%,transparent);border-radius:14px;padding:16px 18px;font-size:.9rem;color:var(--ink);display:flex;gap:12px;align-items:flex-start}
+  .callout .ic{flex:none;color:var(--pine)}
+  .macro{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .macro div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .macro .v{font-family:"Space Mono",monospace;font-weight:700;font-size:1.3rem;color:var(--pine)}
+  .macro .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin-top:2px}
+
+  .rc-list{display:grid;gap:10px}
+  .rc{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;box-shadow:var(--shadow)}
+  .rc input{position:absolute;opacity:0;width:0;height:0}
+  .rc label.box{flex:none;width:24px;height:24px;border-radius:7px;border:2px solid var(--line);cursor:pointer;display:grid;place-items:center;color:#fff}
+  .rc input:checked+label.box{background:var(--race);border-color:var(--race)}
+  .rc input:checked+label.box svg{opacity:1}
+  .rc label.box svg{opacity:0}
+  .rc input:focus-visible+label.box{outline:2px solid var(--race);outline-offset:2px}
+  .rc .txt{font-size:.92rem}
+  .rc.done .txt{opacity:.55;text-decoration:line-through}
+
+  /* ---- Loggers (fuel & sleep) ---- */
+  .profile{display:flex;align-items:center;gap:8px}
+  .profile label{font-size:.82rem;color:var(--ink-soft);font-weight:600;display:flex;align-items:center;gap:8px}
+  .profile input,.sl-in input,.sl-in select{font-family:"Space Mono",monospace;font-weight:700;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:7px 9px;width:64px;text-align:center;font-size:.95rem}
+  .profile input:focus,.sl-in input:focus,.sl-in select:focus{outline:2px solid var(--pine);outline-offset:1px;border-color:var(--pine)}
+
+  .logblock{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
+  .load-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  .load-head .d{font-family:"Space Mono",monospace;font-weight:700;font-size:1.05rem}
+  .load-pill{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:999px}
+  .load-rest{background:var(--rest-soft);color:var(--rest)}
+  .load-moderate{background:var(--pine-soft);color:var(--pine)}
+  .load-hard{background:var(--amber-soft);color:var(--amber)}
+  .load-sub{color:var(--ink-soft);font-size:.85rem;margin:2px 0 18px}
+
+  .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .tgt .tl{display:flex;justify-content:space-between;align-items:baseline;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+  .tgt .tv{font-family:"Space Mono",monospace;font-size:1.02rem;font-weight:700;color:var(--ink);margin:3px 0 6px}
+  .tgt .tv small{color:var(--ink-soft);font-weight:400;font-size:.78rem}
+  .tbar{height:8px;border-radius:99px;background:var(--ring-track);overflow:hidden}
+  .tbar i{display:block;height:100%;border-radius:99px;transition:width .35s ease;background:var(--go)}
+  .tbar i.warn{background:var(--amber)}
+  .tbar i.over{background:var(--race)}
+
+  .qa-groups{display:grid;gap:12px;margin-top:6px}
+  .qa-grp b{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .qa-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+  .qa{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:600;cursor:pointer;display:inline-flex;gap:7px;align-items:center;font-family:inherit}
+  .qa:hover{border-color:var(--pine);background:var(--pine-soft)}
+  .qa .kc{font-family:"Space Mono",monospace;font-size:.7rem;color:var(--ink-soft);font-weight:400}
+  .qa .plus{color:var(--pine);font-weight:800}
+
+  .logged{display:grid;gap:8px;margin-top:6px}
+  .logged .empty{color:var(--ink-soft);font-size:.86rem;font-style:italic}
+  .li{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line-soft);border-radius:11px;padding:9px 12px}
+  .li .nm{font-weight:600;font-size:.9rem;flex:1;min-width:0}
+  .li .mc{font-family:"Space Mono",monospace;font-size:.72rem;color:var(--ink-soft);white-space:nowrap}
+  .stp{display:flex;align-items:center;gap:8px}
+  .stp button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1rem;line-height:1;cursor:pointer;font-family:inherit;display:grid;place-items:center}
+  .stp button:hover{border-color:var(--pine);color:var(--pine)}
+  .stp .q{font-family:"Space Mono",monospace;font-weight:700;min-width:1.5ch;text-align:center}
+  .water-ctl{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .water-ctl .glasses{display:flex;gap:4px;flex-wrap:wrap}
+  .water-ctl .g{width:16px;height:22px;border-radius:3px 3px 5px 5px;border:1.5px solid var(--pine);background:transparent}
+  .water-ctl .g.full{background:var(--pine)}
+
+  .recal{border-radius:14px;padding:18px 20px;margin-top:4px;border:1px solid var(--line)}
+  .recal.good{background:var(--go-soft);border-color:color-mix(in srgb,var(--go) 30%,transparent)}
+  .recal.warn{background:var(--amber-soft);border-color:color-mix(in srgb,var(--amber) 30%,transparent)}
+  .recal.bad{background:var(--race-soft);border-color:color-mix(in srgb,var(--race) 30%,transparent)}
+  .recal .vh{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem}
+  .recal .vh .badge{font-family:"Anton",sans-serif;font-size:.9rem;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:7px;color:#fff}
+  .recal.good .badge{background:var(--go)} .recal.warn .badge{background:var(--amber)} .recal.bad .badge{background:var(--race)}
+  .recal ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+  .recal li{display:flex;gap:9px;font-size:.9rem;color:var(--ink)}
+  .recal li::before{content:"→";color:var(--ink-soft);font-weight:700}
+
+  /* sleep */
+  .sl-in{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end}
+  .sl-in .f{display:flex;flex-direction:column;gap:6px}
+  .sl-in .f>span{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+  .qbtns{display:flex;gap:6px}
+  .qbtns button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:9px;padding:8px 12px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit}
+  .qbtns button[aria-pressed="true"]{background:var(--pine);color:#fff;border-color:var(--pine)}
+  .savebtn{background:var(--pine);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem}
+  .savebtn:hover{background:var(--pine-deep)}
+  .sl-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:4px 0 2px}
+  .sl-stat{background:var(--paper);border:1px solid var(--line-soft);border-radius:12px;padding:14px;text-align:center}
+  .sl-stat .v{font-family:"Anton",sans-serif;font-size:1.7rem;line-height:1}
+  .sl-stat .k{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+  .chart{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:8px;padding-top:8px}
+  .chart .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+  .chart .bar{width:100%;max-width:34px;border-radius:6px 6px 3px 3px;background:var(--go);min-height:3px;transition:height .35s}
+  .chart .bar.low{background:var(--amber)} .chart .bar.vlow{background:var(--race)}
+  .chart .lbl{font-size:.64rem;color:var(--ink-soft);font-family:"Space Mono",monospace}
+  .chart .val{font-size:.62rem;color:var(--ink-soft);font-family:"Space Mono",monospace}
+  .chart .none{color:var(--ink-soft);font-size:.85rem;font-style:italic;align-self:center;margin:auto}
+
+  details.ref{margin-top:8px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+  details.ref>summary{cursor:pointer;padding:15px 20px;font-weight:700;font-size:.9rem;list-style:none;display:flex;align-items:center;gap:10px}
+  details.ref>summary::-webkit-details-marker{display:none}
+  details.ref>summary::before{content:"▶";font-size:.7rem;color:var(--ink-soft);transition:transform .2s}
+  details.ref[open]>summary::before{transform:rotate(90deg)}
+  details.ref .refbody{padding:4px 20px 22px}
+
+  .reset{margin-top:40px;text-align:center}
+  .reset button{background:transparent;border:1px solid var(--line);color:var(--ink-soft);padding:9px 16px;border-radius:10px;font-size:.82rem;cursor:pointer}
+  .reset button:hover{border-color:var(--race);color:var(--race)}
+  footer{color:var(--ink-soft);font-size:.8rem;text-align:center;padding:0 0 40px}
+
+  @media (max-width:760px){
+    .hero-grid{grid-template-columns:1fr;gap:24px}
+    .dash{grid-template-columns:1fr;justify-items:center;text-align:center}
+    .stats{width:100%}
+    .stats{grid-template-columns:repeat(2,1fr)}
+  }
+
+  /* ---- account controls ---- */
+  .acct{display:flex;align-items:center;gap:10px}
+  .acct-email{font-size:.78rem;color:var(--ink-soft);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .linkbtn{background:transparent;border:0;color:var(--ink-soft);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;padding:6px 6px}
+  .linkbtn:hover{color:var(--race)}
+  .sync{font-size:.68rem;letter-spacing:.04em;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .sync::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .sync-ok{background:var(--go-soft);color:var(--go)}
+  .sync-saving{background:var(--amber-soft);color:var(--amber)}
+  .sync-warn{background:var(--rest-soft);color:var(--rest)}
+  .sync-err{background:var(--race-soft);color:var(--race)}
+  @media (max-width:640px){ .acct-email{display:none} }
+
+  /* ---- auth gate ---- */
+  .auth-gate{position:fixed;inset:0;z-index:100;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px}
+  .auth-gate.hidden{display:none}
+  .auth-card{max-width:440px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:36px}
+  .auth-brand{display:flex;align-items:center;gap:9px;font-family:"Anton",sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:1rem;color:var(--ink)}
+  .auth-brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px var(--amber-soft)}
+  .auth-card h2{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;font-size:1.7rem;line-height:1.02;margin:18px 0 10px;text-wrap:balance}
+  .auth-card p{color:var(--ink-soft);font-size:.92rem;margin:0 0 20px}
+  .auth-row{display:flex;gap:8px;flex-wrap:wrap}
+  .auth-row input{flex:1;min-width:180px;background:var(--paper);border:1px solid var(--line);color:var(--ink);border-radius:11px;padding:12px 14px;font-family:inherit;font-size:.95rem}
+  .auth-row input:focus{outline:2px solid var(--pine);outline-offset:1px;border-color:var(--pine)}
+  .auth-row button{background:var(--pine);color:#fff;border:0;border-radius:11px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.92rem}
+  .auth-row button:hover{background:var(--pine-deep)}
+  .auth-row button:disabled{opacity:.6;cursor:default}
+  .auth-msg{margin-top:14px;font-size:.86rem;color:var(--pine);min-height:1.2em;font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand"><span class="dot"></span> Dawn Run 5K</div>
+    <h2>Sign in to sync your training</h2>
+    <p>Your plan, food, and sleep logs sync across every device. Enter your email and we’ll send a one-tap magic link — no password to remember.</p>
+    <div class="auth-row">
+      <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+      <button id="authSend">Send magic link</button>
+    </div>
+    <div id="authMsg" class="auth-msg" role="status"></div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="dot"></span><b>Dawn Run 5K</b></div>
+    <div class="mini-count"><span class="n" id="miniDays">—</span><span class="l">days to go</span></div>
+    <div class="acct">
+      <span id="syncBadge" class="sync sync-warn">Local</span>
+      <span id="acctEmail" class="acct-email"></span>
+      <button id="signOutBtn" class="linkbtn">Sign out</button>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle light/dark theme">◐</button>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="plan">Training Plan</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="fuel">Fuel &amp; Diet</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="recovery">Sleep &amp; Recovery</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="race">Race Day</button>
+  </nav>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">7-week build · Sep 6 → Oct 24, 2026</div>
+      <h1 class="display">Seven weeks<br>to your <span class="amber">first 5K</span>.</h1>
+      <p class="sub">A progressive run–walk plan that carries you from base intervals to a continuous 5&nbsp;kilometres — with the fuel, sleep, and race-day details that actually make it happen. Tick each session as you go; your progress saves automatically.</p>
+      <div class="meta">
+        <span class="chip"><span class="k">Goal</span> 5.0&nbsp;km continuous</span>
+        <span class="chip"><span class="k">Race</span> Sat 24 Oct 2026</span>
+        <span class="chip"><span class="k">Sessions</span> <span id="chipSessions">—</span></span>
+      </div>
+    </div>
+    <div class="countbox">
+      <div class="lab">Countdown to race</div>
+      <div class="big mono" id="bigDays">—</div>
+      <div class="days" id="bigDaysLabel">days</div>
+      <div class="date" id="bigDate">—</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="dash">
+    <div class="ring">
+      <svg width="132" height="132" viewBox="0 0 132 132">
+        <circle cx="66" cy="66" r="58" fill="none" stroke="var(--ring-track)" stroke-width="12"/>
+        <circle id="ringFg" cx="66" cy="66" r="58" fill="none" stroke="var(--amber)" stroke-width="12" stroke-linecap="round" stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+      </svg>
+      <div class="pct"><b id="ringPct">0%</b><span>complete</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="stDone">0</div><div class="k">Sessions done</div><div class="bar"><i id="barDone" style="width:0"></i></div></div>
+      <div class="stat"><div class="v" id="stRuns">0</div><div class="k">Runs logged</div><div class="bar"><i id="barRuns" style="width:0"></i></div></div>
+      <div class="stat"><div class="v" id="stWeek">1</div><div class="k">Current week</div><div class="bar"><i id="barWeek" style="width:0"></i></div></div>
+      <div class="stat"><div class="v" id="stStreak">0</div><div class="k">Weeks cleared</div><div class="bar"><i id="barStreak" style="width:0"></i></div></div>
+    </div>
+  </div>
+
+  <!-- ============ PLAN ============ -->
+  <section class="panel active" id="panel-plan" role="tabpanel">
+    <div class="sec-head">
+      <div>
+        <h2>The 7-week plan</h2>
+        <p>Three runs a week, strength and cross-training between them, honest rest before hard days. Tap a week to open it.</p>
+      </div>
+    </div>
+    <div class="weeks" id="weeks"></div>
+    <div class="reset"><button id="resetBtn">Reset all progress</button></div>
+  </section>
+
+  <!-- ============ FUEL ============ -->
+  <section class="panel" id="panel-fuel" role="tabpanel">
+    <div class="sec-head">
+      <div><h2>Fuel &amp; diet</h2><p>Log today's food and water. The plan reads your training load and recalibrates what to top up.</p></div>
+      <div class="profile"><label>Body weight <input id="wt" type="number" min="30" max="200" step="1" inputmode="numeric"> kg</label></div>
+    </div>
+    <div id="fuelToday"></div>
+    <details class="ref">
+      <summary>Reference · nutrition principles</summary>
+      <div class="refbody">
+      <div class="callout" style="margin-bottom:16px"><span class="ic">◎</span><div><b>The one rule:</b> Never try anything new on race day or the night before. Rehearse your pre-run breakfast during training so you know it sits well.</div></div>
+    <div class="cards">
+      <div class="infocard">
+        <h3><span class="ic">☼</span> Everyday plate</h3>
+        <p style="color:var(--ink-soft);font-size:.86rem;margin:-4px 0 12px">Roughly how to build meals on training weeks.</p>
+        <div class="macro">
+          <div><div class="v">50%</div><div class="k">Carbs</div></div>
+          <div><div class="v">25%</div><div class="k">Protein</div></div>
+          <div><div class="v">25%</div><div class="k">Fats &amp; veg</div></div>
+        </div>
+        <ul style="margin-top:14px">
+          <li><span><b>Carbs are fuel:</b> oats, rice, potatoes, whole-grain bread, fruit — don't fear them on run days.</span></li>
+          <li><span><b>Protein repairs:</b> aim ~1.2–1.6 g per kg bodyweight (eggs, dairy, legumes, chicken, fish, tofu).</span></li>
+          <li><span><b>Colour every meal:</b> vegetables and fruit for micronutrients and recovery.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">→</span> Around your runs</h3>
+        <ul>
+          <li><span><b>1–2 hrs before:</b> a light carb snack — banana, toast with honey, a small bowl of oats. Avoid heavy or high-fat food.</span></li>
+          <li><span><b>Short easy runs:</b> fine to go fasted if that suits you; keep water handy.</span></li>
+          <li><span><b>Within 30–60 min after:</b> carbs + protein to recover — yoghurt &amp; fruit, eggs on toast, a milk-based smoothie.</span></li>
+          <li><span><b>Longer sessions (W6–7):</b> a few sips of water mid-run; nothing fancy needed under 5K.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">◇</span> Hydration</h3>
+        <ul>
+          <li><span><b>Daily target:</b> ~2–3 litres of water; more on hot days and hard sessions.</span></li>
+          <li><span><b>Check colour:</b> pale straw = well hydrated. Dark = drink up.</span></li>
+          <li><span><b>Electrolytes:</b> after sweaty runs, a pinch of salt in food or an electrolyte drink helps.</span></li>
+          <li><span><b>Limit:</b> alcohol the night before key runs — it wrecks sleep and hydration.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">★</span> Race-week fuelling</h3>
+        <ul>
+          <li><span><b>Mon–Thu:</b> eat normally, stay hydrated, nothing experimental.</span></li>
+          <li><span><b>Fri (day before):</b> slightly more carbs across the day (not one giant meal), plenty of fluids.</span></li>
+          <li><span><b>Race morning:</b> your rehearsed breakfast 2–3 hrs before — e.g. oats + banana + coffee if you're used to it.</span></li>
+          <li><span><b>Right after:</b> celebrate, then refuel with carbs + protein within the hour.</span></li>
+        </ul>
+      </div>
+    </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ RECOVERY ============ -->
+  <section class="panel" id="panel-recovery" role="tabpanel">
+    <div class="sec-head"><div><h2>Sleep &amp; recovery</h2><p>Log last night's sleep. The tracker watches your rolling average and debt, then recalibrates tonight's target.</p></div></div>
+    <div id="sleepPanel"></div>
+    <details class="ref">
+      <summary>Reference · recovery principles</summary>
+      <div class="refbody">
+      <div class="callout" style="margin-bottom:16px"><span class="ic">☾</span><div><b>Target 7–9 hours a night</b>, and protect the two nights before hard runs and race day. If race-eve nerves cost you sleep, don't panic — the night <em>before</em> that one matters most.</div></div>
+    <div class="cards">
+      <div class="infocard">
+        <h3><span class="ic">☾</span> Sleep foundation</h3>
+        <ul>
+          <li><span><b>Consistent times:</b> same bed/wake window, even weekends — it stabilises energy.</span></li>
+          <li><span><b>Wind down:</b> screens off ~45 min before bed; dim lights, cool dark room.</span></li>
+          <li><span><b>Caffeine cutoff:</b> none after ~2 pm so it doesn't fragment sleep.</span></li>
+          <li><span><b>Bank sleep:</b> in weeks 6–7, add 30 min a night as mileage peaks.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">✚</span> Active recovery</h3>
+        <ul>
+          <li><span><b>Rest days are training:</b> take them fully — walking is fine, hard efforts are not.</span></li>
+          <li><span><b>Mobility:</b> 5–10 min of hips, calves, hamstrings after runs; foam-roll tight spots.</span></li>
+          <li><span><b>Legs up:</b> a few minutes with legs against the wall after long runs eases heavy legs.</span></li>
+          <li><span><b>Listen for pain:</b> soreness is fine; sharp or one-sided joint pain means back off.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">⚑</span> Injury-proofing</h3>
+        <ul>
+          <li><span><b>Warm up:</b> 3–5 min brisk walk + leg swings before every run.</span></li>
+          <li><span><b>Cool down:</b> easy walk + light stretch; never stop dead from a hard effort.</span></li>
+          <li><span><b>Shoes:</b> run in proper, non-worn trainers; replace if they're flat or painful.</span></li>
+          <li><span><b>10% rule:</b> the plan already ramps gently — don't add extra hard mileage on top.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">◈</span> Strength &amp; core</h3>
+        <ul>
+          <li><span><b>Twice a week (20 min):</b> squats, lunges, glute bridges, calf raises, planks.</span></li>
+          <li><span><b>Why it matters:</b> stronger hips and core = better form and far fewer injuries.</span></li>
+          <li><span><b>Keep it light:</b> bodyweight or light weights; leave energy for your runs.</span></li>
+        </ul>
+      </div>
+    </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ RACE DAY ============ -->
+  <section class="panel" id="panel-race" role="tabpanel">
+    <div class="sec-head"><div><h2>Race day — 24 October</h2><p>You've done the work. This is the fun part. Here's how to run it smart and enjoy the finish.</p></div></div>
+    <div class="cards" style="margin-bottom:22px">
+      <div class="infocard">
+        <h3><span class="ic">◷</span> Pacing plan</h3>
+        <ul>
+          <li><span><b>Start slower than feels right</b> — adrenaline makes everyone go out too fast.</span></li>
+          <li><span><b>First km easy</b>, settle into the pace you trained at.</span></li>
+          <li><span><b>Middle km steady</b>, breathing controlled — able to say a few words.</span></li>
+          <li><span><b>Last km:</b> if you feel good, lift the pace and finish strong.</span></li>
+          <li><span><b>Walk breaks are allowed</b> — a run/walk finish is still a finish.</span></li>
+        </ul>
+      </div>
+      <div class="infocard">
+        <h3><span class="ic">☼</span> Morning timeline</h3>
+        <ul>
+          <li><span><b>Wake ~3 hrs before</b> the start.</span></li>
+          <li><span><b>Breakfast 2–3 hrs before</b> — your rehearsed meal, sip water.</span></li>
+          <li><span><b>Arrive early:</b> toilet, bib, easy walk + dynamic warm-up.</span></li>
+          <li><span><b>Line up honestly</b> by expected pace; don't get swept along.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sec-head"><div><h3 class="display" style="font-size:1.3rem">Race-day checklist</h3></div></div>
+    <div class="rc-list" id="raceList"></div>
+  </section>
+
+  <footer>Built for your run · Synced to your account across all your devices. Not medical advice — see a doctor before starting a new exercise program.</footer>
+</main>
+
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
