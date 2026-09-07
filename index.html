@@ -272,6 +272,16 @@
   .chart .val{font-size:.62rem;color:var(--ink-soft);font-family:"Space Mono",monospace}
   .chart .none{color:var(--ink-soft);font-size:.85rem;font-style:italic;align-self:center;margin:auto}
 
+  /* weight line chart */
+  .wchart{width:100%;overflow:hidden}
+  .wchart svg{width:100%;height:auto;display:block}
+  .wchart .none{color:var(--ink-soft);font-size:.85rem;font-style:italic;padding:24px 0;text-align:center}
+  .wgrid{stroke:var(--line);stroke-width:1}
+  .wline{fill:none;stroke:var(--pine);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+  .wdot{fill:var(--card);stroke:var(--pine);stroke-width:2}
+  .wdot.last{fill:var(--amber);stroke:var(--amber)}
+  .wlabel{fill:var(--ink-soft);font-size:10px;font-family:"Space Mono",monospace}
+
   details.ref{margin-top:8px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
   details.ref>summary{cursor:pointer;padding:15px 20px;font-weight:700;font-size:.9rem;list-style:none;display:flex;align-items:center;gap:10px}
   details.ref>summary::-webkit-details-marker{display:none}
@@ -336,6 +346,7 @@
     <button class="tab" role="tab" aria-selected="true" data-tab="plan">Training Plan</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="fuel">Fuel &amp; Diet</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="recovery">Sleep &amp; Recovery</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="weight">Weight</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="race">Race Day</button>
   </nav>
 </div>
@@ -394,7 +405,7 @@
   <section class="panel" id="panel-fuel" role="tabpanel">
     <div class="sec-head">
       <div><h2>Fuel &amp; diet</h2><p>Log today's food and water. The plan reads your training load and recalibrates what to top up.</p></div>
-      <div class="profile"><label>Body weight <input id="wt" type="number" min="30" max="200" step="1" inputmode="numeric"> kg</label></div>
+      <div class="profile"><label>Body weight <input id="wt" type="number" min="30" max="250" step="0.1" inputmode="decimal"> kg</label></div>
     </div>
     <div id="fuelToday"></div>
     <details class="ref">
@@ -495,6 +506,12 @@
     </div>
       </div>
     </details>
+  </section>
+
+  <!-- ============ WEIGHT ============ -->
+  <section class="panel" id="panel-weight" role="tabpanel">
+    <div class="sec-head"><div><h2>Body weight</h2><p>Log your weight and watch the trend. Your most recent entry sets your fuel targets automatically.</p></div></div>
+    <div id="weightPanel"></div>
   </section>
 
   <!-- ============ RACE DAY ============ -->

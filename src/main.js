@@ -354,7 +354,11 @@ function bootApp() {
   function foodDef(id) { return FOODS[id] || (state.customFoods && state.customFoods[id]) || null }
   const GROUPS = [['c', 'Carbs — your fuel'], ['p', 'Protein — repair'], ['f', 'Fats & veg'], ['d', 'Drinks']]
 
-  function getWeight() { return state.weight || 65 }
+  function weightEntries() {
+    const w = state.weights || {}
+    return Object.keys(w).map(k => ({ k, w: w[k] })).sort((a, b) => a.k < b.k ? -1 : 1)
+  }
+  function getWeight() { const e = weightEntries(); return e.length ? e[e.length - 1].w : (state.weight || 65) }
   function ensureLog(k) { if (!state.log) state.log = {}; if (!state.log[k]) state.log[k] = { foods: {}, water: 0 }; return state.log[k] }
 
   function fuelTargets(w, load) {
@@ -566,7 +570,7 @@ function bootApp() {
   wtInput.value = getWeight()
   wtInput.addEventListener('change', () => {
     const v = parseFloat(wtInput.value)
-    if (v >= 30 && v <= 200) { state.weight = Math.round(v); save(); renderFuel() } else { wtInput.value = getWeight() }
+    if (v >= 30 && v <= 250) { logWeight(keyOf(new Date()), v); renderFuel(); renderWeight() } else { wtInput.value = getWeight() }
   })
 
   document.getElementById('sleepPanel').addEventListener('click', e => {
@@ -583,8 +587,87 @@ function bootApp() {
     }
   })
 
+  // ---------- WEIGHT ----------
+  function logWeight(dateKey, val) {
+    if (!state.weights) state.weights = {}
+    state.weights[dateKey] = Math.round(val * 10) / 10
+    state.weight = getWeight()   // keep legacy field synced to the latest entry
+    save()
+  }
+
+  function weightChartSVG(entries) {
+    if (!entries.length) return '<div class="wchart"><div class="none">Log your weight to start the graph.</div></div>'
+    const W = 620, H = 200, padL = 40, padR = 16, padT = 16, padB = 26
+    const ws = entries.map(e => e.w)
+    let lo = Math.min(...ws), hi = Math.max(...ws)
+    if (hi === lo) { hi = lo + 1; lo = lo - 1 } else { const pad = (hi - lo) * 0.2; hi += pad; lo -= pad }
+    const n = entries.length
+    const X = i => n === 1 ? (padL + (W - padL - padR) / 2) : padL + i / (n - 1) * (W - padL - padR)
+    const Y = w => padT + (1 - (w - lo) / (hi - lo)) * (H - padT - padB)
+    const baseY = H - padB
+    const gridVals = [hi, (hi + lo) / 2, lo]
+    let grid = '', ylab = ''
+    gridVals.forEach(v => {
+      const y = Y(v)
+      grid += '<line class="wgrid" x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + y.toFixed(1) + '"/>'
+      ylab += '<text class="wlabel" x="' + (padL - 7) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end">' + v.toFixed(1) + '</text>'
+    })
+    const pts = entries.map((e, i) => X(i).toFixed(1) + ',' + Y(e.w).toFixed(1))
+    let dots = ''
+    entries.forEach((e, i) => { const last = i === n - 1; dots += '<circle class="wdot' + (last ? ' last' : '') + '" cx="' + X(i).toFixed(1) + '" cy="' + Y(e.w).toFixed(1) + '" r="' + (last ? 4.5 : 3) + '"/>' })
+    const area = 'M ' + X(0).toFixed(1) + ',' + baseY + ' L ' + pts.join(' L ') + ' L ' + X(n - 1).toFixed(1) + ',' + baseY + ' Z'
+    const line = 'M ' + pts.join(' L ')
+    const lbl = k => { const d = new Date(k + 'T00:00:00'); return d.getDate() + ' ' + MON[d.getMonth()] }
+    let xl = '<text class="wlabel" x="' + X(0).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="start">' + lbl(entries[0].k) + '</text>'
+    if (n > 1) xl += '<text class="wlabel" x="' + X(n - 1).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="end">' + lbl(entries[n - 1].k) + '</text>'
+    return '<div class="wchart"><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Body weight over time">' +
+      '<defs><linearGradient id="wgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--pine)" stop-opacity="0.20"/><stop offset="1" stop-color="var(--pine)" stop-opacity="0"/></linearGradient></defs>' +
+      grid + '<path d="' + area + '" fill="url(#wgrad)" stroke="none"/>' + '<path class="wline" d="' + line + '"/>' + dots + ylab + xl + '</svg></div>'
+  }
+
+  function renderWeight() {
+    const host = document.getElementById('weightPanel'); if (!host) return
+    const entries = weightEntries()
+    const latest = entries.length ? entries[entries.length - 1].w : null
+    const first = entries.length ? entries[0].w : null
+    const change = entries.length > 1 ? (latest - first) : 0
+    const todayK = keyOf(new Date())
+    const todayVal = (state.weights && state.weights[todayK] != null) ? state.weights[todayK] : (latest != null ? latest : '')
+    const changeStr = entries.length > 1 ? ((change > 0 ? '+' : '') + change.toFixed(1)) : '–'
+    const changeColor = change < 0 ? 'var(--go)' : (change > 0 ? 'var(--amber)' : 'var(--ink-soft)')
+    host.innerHTML =
+      '<div class="logblock">' +
+        '<div class="load-head" style="margin-bottom:14px"><span class="d">Log weight</span></div>' +
+        '<div class="sl-in">' +
+          '<div class="f"><span>Date</span><input id="wDate" type="date" value="' + todayK + '" max="' + todayK + '"></div>' +
+          '<div class="f"><span>Weight (kg)</span><input id="wVal" type="number" min="30" max="250" step="0.1" value="' + todayVal + '" placeholder="65" inputmode="decimal"></div>' +
+          '<button class="savebtn" id="wSave">Save weight</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="logblock">' +
+        '<div class="sl-stats">' +
+          '<div class="sl-stat"><div class="v" style="color:var(--pine)">' + (latest != null ? latest : '–') + '</div><div class="k">Latest (kg)</div></div>' +
+          '<div class="sl-stat"><div class="v" style="color:' + changeColor + '">' + changeStr + '</div><div class="k">Change (kg)</div></div>' +
+          '<div class="sl-stat"><div class="v">' + entries.length + '</div><div class="k">Entries</div></div>' +
+        '</div>' +
+        '<div style="margin-top:14px">' + weightChartSVG(entries) + '</div>' +
+      '</div>'
+  }
+
+  document.getElementById('weightPanel').addEventListener('click', e => {
+    if (e.target.id !== 'wSave') return
+    const dk = document.getElementById('wDate').value || keyOf(new Date())
+    const v = parseFloat(document.getElementById('wVal').value)
+    if (isNaN(v) || v < 30 || v > 250) { document.getElementById('wVal').focus(); return }
+    logWeight(dk, v)
+    renderWeight()
+    if (wtInput) wtInput.value = getWeight()
+    renderFuel()
+  })
+
   updateCountdown()
   refresh()
   renderFuel()
   renderSleep()
+  renderWeight()
 }
