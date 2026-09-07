@@ -7,9 +7,8 @@ import { supabase } from './supabase.js'
    ========================================================================= */
 
 const LS = 'dawnRun5k.v1'
+const ROW_ID = 'singleton'   // single-user app, no login — everything lives in one shared row
 let state = {}
-let booted = false
-let authed = false
 let saveTimer = null
 
 /* ---------------- sync indicator ---------------- */
@@ -38,68 +37,45 @@ function save() {
 }
 
 async function pushRemote() {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) { setSync('local'); return }
-  const { error } = await supabase
-    .from('tracker_state')
-    .upsert({ user_id: user.id, data: state, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
-  setSync(error ? 'error' : 'saved')
-  if (error) console.error('Supabase upsert failed:', error.message)
-}
-
-async function loadRemote(user) {
-  // paint instantly from local cache first
-  try { state = JSON.parse(localStorage.getItem(LS)) || {} } catch (e) { state = {} }
-  const { data, error } = await supabase
-    .from('tracker_state').select('data').eq('user_id', user.id).maybeSingle()
-  if (error) { setSync('local'); console.error('Supabase load failed:', error.message); return }
-  if (data && data.data) {
-    state = data.data            // cloud is the source of truth once you're signed in
-    saveLocal()
-    setSync('saved')
-  } else {
-    await pushRemote()           // first login on this account: migrate local → cloud
+  try {
+    const { error } = await supabase
+      .from('tracker_state')
+      .upsert({ id: ROW_ID, data: state, updated_at: new Date().toISOString() }, { onConflict: 'id' })
+    setSync(error ? 'error' : 'saved')
+    if (error) console.error('Supabase upsert failed:', error.message)
+  } catch (e) {
+    setSync('local')             // offline / not configured — kept in localStorage
+    console.error('Supabase upsert threw:', e)
   }
 }
 
-/* ---------------- auth ---------------- */
-const gate = document.getElementById('authGate')
-const emailInput = document.getElementById('authEmail')
-const sendBtn = document.getElementById('authSend')
-const authMsg = document.getElementById('authMsg')
-
-async function sendMagicLink() {
-  const email = (emailInput.value || '').trim()
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { authMsg.textContent = 'Enter a valid email address.'; return }
-  sendBtn.disabled = true
-  authMsg.textContent = 'Sending…'
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: window.location.origin }
-  })
-  sendBtn.disabled = false
-  authMsg.textContent = error ? ('Error: ' + error.message) : 'Check your email for the magic link ✉️'
-}
-sendBtn && sendBtn.addEventListener('click', sendMagicLink)
-emailInput && emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMagicLink() })
-
-const signOutBtn = document.getElementById('signOutBtn')
-signOutBtn && signOutBtn.addEventListener('click', async () => { await supabase.auth.signOut() })
-
-supabase.auth.onAuthStateChange(async (_event, session) => {
-  if (session && session.user) {
-    if (authed) return               // already handled this sign-in
-    authed = true
-    gate.classList.add('hidden')
-    const em = document.getElementById('acctEmail')
-    if (em) em.textContent = session.user.email || ''
-    await loadRemote(session.user)
-    if (!booted) { booted = true; bootApp() }
-  } else {
-    if (authed) { location.reload(); return }   // signed out → reset UI
-    gate.classList.remove('hidden')
+// Pull the cloud copy in the background and reconcile with what we booted from.
+async function syncFromRemote() {
+  try {
+    const { data, error } = await supabase
+      .from('tracker_state').select('data').eq('id', ROW_ID).maybeSingle()
+    if (error) { setSync('local'); console.error('Supabase load failed:', error.message); return }
+    if (data && data.data) {
+      const remote = JSON.stringify(data.data)
+      if (remote !== JSON.stringify(state)) {
+        localStorage.setItem(LS, remote)   // cloud is newer → adopt it and repaint once
+        location.reload()
+      } else {
+        setSync('saved')
+      }
+    } else {
+      await pushRemote()                   // cloud empty → seed it from local
+    }
+  } catch (e) {
+    setSync('local')                       // offline / not configured — run from localStorage
+    console.error('Supabase unreachable:', e)
   }
-})
+}
+
+/* ---------------- boot (no login — single user) ---------------- */
+try { state = JSON.parse(localStorage.getItem(LS)) || {} } catch (e) { state = {} }
+bootApp()          // instant paint from local cache — never blocks on the network
+syncFromRemote()   // then reconcile with the cloud in the background
 
 /* =========================================================================
    bootApp — the tracker. Runs once, after the user is authenticated and

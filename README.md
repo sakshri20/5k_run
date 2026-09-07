@@ -3,7 +3,7 @@
 A 7-week 5K training tracker (plan + food + sleep) that syncs across your devices.
 
 - **Frontend:** plain HTML/CSS/JS bundled with **Vite**, hosted on **Vercel**
-- **Backend:** **Supabase** (magic-link auth + one JSONB row per user, protected by Row Level Security)
+- **Backend:** **Supabase** — a single shared JSONB row (no login; this is a personal single-user app)
 - **Update loop:** edit code → `git push` → Vercel rebuilds automatically. Database changes go through `supabase/schema.sql`.
 
 ---
@@ -15,7 +15,7 @@ You (Claude Code)  ──edit──►  GitHub repo  ──auto-deploy──► 
                                                                   │
                                                           browser loads app
                                                                   │
-                                              magic-link login + data read/write
+                                                  data read / write (no login)
                                                                   ▼
                                                      Supabase (Auth + Postgres)
 ```
@@ -39,8 +39,8 @@ You'll do this once. Steps marked **(you)** need your login and can't be automat
    - **Project URL** → this is `VITE_SUPABASE_URL`
    - **Project API keys → `anon` / `public`** → this is `VITE_SUPABASE_ANON_KEY`
    (The anon key is meant to be public; RLS is what keeps each user's data private.)
-4. Open **Authentication → Providers → Email** and make sure **Email** is enabled.
-   For zero-friction login, turn **Confirm email** on and leave magic links enabled (default).
+   > No auth setup needed — this app has no login. The `schema.sql` policy grants the public
+   > anon key read/write on the single shared row.
 
 ### 2. Run it locally **(optional, to preview before deploying)**
 
@@ -54,8 +54,6 @@ npm run dev                     # opens http://localhost:5174
 > A placeholder `.env.local` may already exist from scaffolding — overwrite it with your real
 > Supabase URL and anon key, or login will fail with "Failed to fetch".
 
-For local magic links to work, add `http://localhost:5174` under
-**Supabase → Authentication → URL Configuration → Redirect URLs**.
 
 ### 3. Push to GitHub **(you)**
 
@@ -81,14 +79,7 @@ gh repo create dawn-run-5k --private --source=. --push
    - `VITE_SUPABASE_ANON_KEY`
 4. Click **Deploy**. You'll get a URL like `https://dawn-run-5k.vercel.app`.
 
-### 5. Point Supabase auth at the live URL **(you)**
-
-In **Supabase → Authentication → URL Configuration**:
-- **Site URL:** `https://dawn-run-5k.vercel.app`
-- **Redirect URLs:** add `https://dawn-run-5k.vercel.app` (and keep `http://localhost:5174` for local dev)
-
-Open the site, enter your email, click the magic link in your inbox — you're in, and your data now
-syncs to Supabase. Done.
+Open the site — it loads straight into the tracker (no login) and syncs to Supabase. Done.
 
 ---
 

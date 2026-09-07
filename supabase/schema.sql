@@ -1,35 +1,28 @@
 -- =====================================================================
--- Dawn Run 5K — database schema
--- One JSONB row per user holds the entire tracker state (workouts,
--- food log, sleep log, weight). Row Level Security ensures each user
--- can only read and write their own row.
+-- Dawn Run 5K — database schema (single-user, no login)
+-- One shared row holds the entire tracker state (workouts, food log,
+-- sleep log, weight). No accounts: the public anon key may read/write.
 --
 -- Run this in: Supabase dashboard → SQL Editor → New query → Run.
--- Re-running is safe (idempotent).
+--
+-- NOTE: if you previously ran the older login-based schema, this file
+-- drops that table first (there is no real data to lose yet).
 -- =====================================================================
 
-create table if not exists public.tracker_state (
-  user_id    uuid primary key references auth.users (id) on delete cascade,
+drop table if exists public.tracker_state cascade;
+
+create table public.tracker_state (
+  id         text primary key,          -- always 'singleton' for this app
   data       jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
 
 alter table public.tracker_state enable row level security;
 
--- Policies (drop-then-create so this file can be re-run cleanly)
-drop policy if exists "own row - select" on public.tracker_state;
-drop policy if exists "own row - insert" on public.tracker_state;
-drop policy if exists "own row - update" on public.tracker_state;
-
-create policy "own row - select"
-  on public.tracker_state for select
-  using (auth.uid() = user_id);
-
-create policy "own row - insert"
-  on public.tracker_state for insert
-  with check (auth.uid() = user_id);
-
-create policy "own row - update"
-  on public.tracker_state for update
-  using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+-- Single-user app with no login: allow the public anon key full access.
+drop policy if exists "anon full access" on public.tracker_state;
+create policy "anon full access"
+  on public.tracker_state for all
+  to anon
+  using (true)
+  with check (true);
