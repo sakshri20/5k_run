@@ -329,16 +329,29 @@ function bootApp() {
 
   // ================= FUEL & SLEEP ENGINE =================
   const FOODS = {
-    banana: ['Banana', 'c', 105, 27, 1, 0], oats: ['Oats bowl', 'c', 150, 27, 5, 3], rice: ['Rice (cup)', 'c', 205, 45, 4, 0],
-    bread: ['Toast (slice)', 'c', 80, 14, 3, 1], pasta: ['Pasta (cup)', 'c', 200, 43, 7, 1], potato: ['Potato', 'c', 160, 37, 4, 0],
-    fruit: ['Apple / fruit', 'c', 95, 25, 0, 0], energybar: ['Energy bar', 'c', 200, 30, 8, 6],
-    eggs: ['Eggs (2)', 'p', 140, 1, 12, 10], chicken: ['Chicken 100g', 'p', 165, 0, 31, 4], yogurt: ['Greek yogurt', 'p', 150, 8, 20, 4],
-    dal: ['Dal / lentils', 'p', 230, 40, 18, 1], tofu: ['Tofu 100g', 'p', 145, 3, 16, 9], fish: ['Fish 100g', 'p', 180, 0, 25, 8],
-    milk: ['Milk (glass)', 'p', 120, 12, 8, 5], shake: ['Protein shake', 'p', 160, 8, 25, 3], paneer: ['Paneer 100g', 'p', 265, 4, 18, 20],
-    nuts: ['Nuts (handful)', 'f', 180, 6, 6, 16], avocado: ['Avocado ½', 'f', 120, 6, 1, 11], pnut: ['Peanut butter', 'f', 95, 3, 4, 8],
-    veg: ['Veg / salad', 'f', 60, 10, 3, 1], cheese: ['Cheese slice', 'f', 110, 1, 7, 9],
-    coffee: ['Coffee', 'd', 5, 0, 0, 0], sports: ['Sports drink', 'd', 80, 20, 0, 0], juice: ['Fruit juice', 'd', 110, 26, 1, 0]
+    // --- Carbs ---
+    roti: ['Roti / chapati', 'c', 120, 18, 3, 3], rice: ['Rice (cup)', 'c', 205, 45, 4, 0], paratha: ['Paratha', 'c', 180, 22, 4, 8],
+    idli: ['Idli (2)', 'c', 140, 30, 4, 1], dosa: ['Plain dosa', 'c', 165, 25, 4, 5], poha: ['Poha (bowl)', 'c', 250, 40, 5, 7],
+    upma: ['Upma (bowl)', 'c', 230, 35, 6, 8], oats: ['Oats bowl', 'c', 150, 27, 5, 3], banana: ['Banana', 'c', 105, 27, 1, 0],
+    bread: ['Toast (slice)', 'c', 80, 14, 3, 1], potato: ['Aloo / potato', 'c', 160, 37, 4, 0], sweetpotato: ['Sweet potato', 'c', 115, 27, 2, 0],
+    pasta: ['Pasta (cup)', 'c', 200, 43, 7, 1], fruit: ['Apple / fruit', 'c', 95, 25, 0, 0], energybar: ['Energy bar', 'c', 200, 30, 8, 6],
+    // --- Protein ---
+    dal: ['Dal / lentils', 'p', 230, 40, 18, 1], rajma: ['Rajma (cup)', 'p', 215, 38, 15, 1], chana: ['Chana / chickpea', 'p', 210, 35, 12, 4],
+    curd: ['Curd / dahi (bowl)', 'p', 100, 8, 8, 4], paneer: ['Paneer 100g', 'p', 265, 4, 18, 20], soya: ['Soya chunks', 'p', 170, 10, 26, 1],
+    sprouts: ['Sprouts (cup)', 'p', 125, 22, 10, 1], eggs: ['Eggs (2)', 'p', 140, 1, 12, 10], chicken: ['Chicken 100g', 'p', 165, 0, 31, 4],
+    chickencurry: ['Chicken curry', 'p', 250, 6, 26, 13], fish: ['Fish 100g', 'p', 180, 0, 25, 8], tofu: ['Tofu 100g', 'p', 145, 3, 16, 9],
+    yogurt: ['Greek yogurt', 'p', 150, 8, 20, 4], milk: ['Milk (glass)', 'p', 120, 12, 8, 5], shake: ['Protein shake', 'p', 160, 8, 25, 3],
+    // --- Fats & veg ---
+    sabzi: ['Mixed sabzi', 'f', 120, 12, 4, 7], ghee: ['Ghee (1 tsp)', 'f', 45, 0, 0, 5], nuts: ['Nuts (handful)', 'f', 180, 6, 6, 16],
+    peanuts: ['Peanuts / chana', 'f', 165, 6, 7, 14], chutney: ['Coconut chutney', 'f', 90, 3, 1, 8], avocado: ['Avocado ½', 'f', 120, 6, 1, 11],
+    pnut: ['Peanut butter', 'f', 95, 3, 4, 8], veg: ['Veg / salad', 'f', 60, 10, 3, 1], cheese: ['Cheese slice', 'f', 110, 1, 7, 9],
+    // --- Drinks ---
+    chai: ['Chai', 'd', 90, 12, 3, 3], lassi: ['Sweet lassi', 'd', 180, 28, 6, 5], chaas: ['Chaas / buttermilk', 'd', 40, 4, 3, 1],
+    coconutwater: ['Coconut water', 'd', 45, 9, 1, 0], nimbupani: ['Nimbu pani', 'd', 60, 15, 0, 0], coffee: ['Coffee', 'd', 5, 0, 0, 0],
+    sports: ['Sports drink', 'd', 80, 20, 0, 0], juice: ['Fruit juice', 'd', 110, 26, 1, 0]
   }
+  // definition lookup covers both defaults and the user's saved custom foods
+  function foodDef(id) { return FOODS[id] || (state.customFoods && state.customFoods[id]) || null }
   const GROUPS = [['c', 'Carbs — your fuel'], ['p', 'Protein — repair'], ['f', 'Fats & veg'], ['d', 'Drinks']]
 
   function getWeight() { return state.weight || 65 }
@@ -357,7 +370,7 @@ function bootApp() {
     const w = getWeight(), today = new Date(); today.setHours(0, 0, 0, 0)
     const k = keyOf(today), pd = planFor(today), tg = fuelTargets(w, pd.load), log = ensureLog(k)
     const tot = { kc: 0, c: 0, p: 0, f: 0 }, foods = log.foods || {}
-    Object.keys(foods).forEach(id => { const q = foods[id], F = FOODS[id]; if (!F) return; tot.kc += F[2] * q; tot.c += F[3] * q; tot.p += F[4] * q; tot.f += F[5] * q })
+    Object.keys(foods).forEach(id => { const q = foods[id], F = foodDef(id); if (!F) return; tot.kc += F[2] * q; tot.c += F[3] * q; tot.p += F[4] * q; tot.f += F[5] * q })
     const water = log.water || 0
     const loadLabel = { rest: 'Rest day', moderate: 'Training day', hard: 'Hard / long day' }[pd.load]
 
@@ -367,16 +380,24 @@ function bootApp() {
         '<div class="tv">' + Math.round(val) + '<small> / ' + target + ' ' + unit + '</small></div>' +
         '<div class="tbar"><i class="' + barClass(r) + '" style="width:' + pct + '%"></i></div></div>'
     }
+    const merged = Object.assign({}, FOODS, state.customFoods || {})
     let qa = ''
     GROUPS.forEach(g => {
       let chips = ''
-      Object.keys(FOODS).forEach(id => { if (FOODS[id][1] === g[0]) { const F = FOODS[id]; chips += '<button class="qa" data-add="' + id + '"><span class="plus">+</span>' + F[0] + ' <span class="kc">' + F[2] + '</span></button>' } })
+      Object.keys(merged).forEach(id => {
+        if (merged[id][1] !== g[0]) return
+        const F = merged[id], custom = !!(state.customFoods && state.customFoods[id])
+        chips += '<span class="qa-wrap">' +
+          '<button class="qa' + (custom ? ' qa-custom' : '') + '" data-add="' + id + '"><span class="plus">+</span>' + F[0] + ' <span class="kc">' + F[2] + '</span></button>' +
+          (custom ? '<button class="qa-x" data-delfood="' + id + '" title="Remove custom food" aria-label="Remove ' + F[0] + '">×</button>' : '') +
+          '</span>'
+      })
       qa += '<div class="qa-grp"><b>' + g[1] + '</b><div class="qa-row">' + chips + '</div></div>'
     })
     let logged = ''
-    const ids = Object.keys(foods).filter(id => foods[id] > 0)
+    const ids = Object.keys(foods).filter(id => foods[id] > 0 && foodDef(id))
     if (!ids.length) { logged = '<div class="empty">Nothing logged yet — tap foods above as you eat them.</div>' }
-    else ids.forEach(id => { const F = FOODS[id], q = foods[id]
+    else ids.forEach(id => { const F = foodDef(id), q = foods[id]
       logged += '<div class="li"><span class="nm">' + F[0] + '</span><span class="mc">' + (F[2] * q) + ' kcal · ' + (F[3] * q) + 'C ' + (F[4] * q) + 'P</span>' +
         '<div class="stp"><button data-dec="' + id + '" aria-label="one less">–</button><span class="q">' + q + '</span><button data-inc="' + id + '" aria-label="one more">+</button></div></div>'
     })
@@ -398,6 +419,17 @@ function bootApp() {
       '</div>' +
       '<div class="logblock"><div class="load-head" style="margin-bottom:12px"><span class="d">Add food</span></div>' +
         '<div class="qa-groups">' + qa + '</div></div>' +
+      '<div class="logblock"><div class="load-head" style="margin-bottom:12px"><span class="d">Add custom food</span></div>' +
+        '<div class="custom-form">' +
+          '<input id="cfName" placeholder="Food name" maxlength="40" aria-label="Food name">' +
+          '<select id="cfCat" aria-label="Category"><option value="c">Carbs</option><option value="p">Protein</option><option value="f">Fats & veg</option><option value="d">Drinks</option></select>' +
+          '<input id="cfKcal" type="number" min="0" max="2000" placeholder="kcal" aria-label="Calories">' +
+          '<input id="cfC" type="number" min="0" max="300" placeholder="Carbs g" aria-label="Carbs grams">' +
+          '<input id="cfP" type="number" min="0" max="300" placeholder="Protein g" aria-label="Protein grams">' +
+          '<input id="cfF" type="number" min="0" max="300" placeholder="Fat g" aria-label="Fat grams">' +
+          '<button class="savebtn" id="cfAdd">Add &amp; log</button>' +
+        '</div>' +
+        '<div class="custom-hint">Name and calories required. Saved to your food list for next time, and logged once for today.</div></div>' +
       '<div class="logblock"><div class="load-head" style="margin-bottom:12px"><span class="d">Water</span>' +
           '<span style="color:var(--ink-soft);font-size:.82rem">' + water + ' / ' + tg.ml + ' ml</span></div>' +
         '<div class="water-ctl"><div class="stp"><button data-water="-250" aria-label="less water">–</button>' +
@@ -495,8 +527,32 @@ function bootApp() {
   }
 
   // ---- delegated interactions ----
+  function addCustomFood() {
+    const name = (document.getElementById('cfName').value || '').trim()
+    const cat = document.getElementById('cfCat').value
+    const kcal = parseInt(document.getElementById('cfKcal').value, 10)
+    const c = parseInt(document.getElementById('cfC').value, 10) || 0
+    const p = parseInt(document.getElementById('cfP').value, 10) || 0
+    const f = parseInt(document.getElementById('cfF').value, 10) || 0
+    if (!name) { document.getElementById('cfName').focus(); return }
+    if (isNaN(kcal) || kcal < 0) { document.getElementById('cfKcal').focus(); return }
+    if (!state.customFoods) state.customFoods = {}
+    const id = 'cust_' + Date.now().toString(36)
+    state.customFoods[id] = [name, cat, kcal, c, p, f]
+    const log = ensureLog(keyOf(new Date()))
+    log.foods[id] = (log.foods[id] || 0) + 1        // log it once for today
+    save(); renderFuel()
+  }
+  function removeCustomFood(id) {
+    if (state.customFoods) delete state.customFoods[id]
+    if (state.log) Object.keys(state.log).forEach(k => { if (state.log[k].foods && state.log[k].foods[id] !== undefined) delete state.log[k].foods[id] })
+    save(); renderFuel()
+  }
+
   document.getElementById('fuelToday').addEventListener('click', e => {
     const t = e.target.closest('button'); if (!t) return
+    if (t.dataset.delfood) { removeCustomFood(t.dataset.delfood); return }
+    if (t.id === 'cfAdd') { addCustomFood(); return }
     const today = keyOf(new Date()), log = ensureLog(today)
     if (t.dataset.add) { log.foods[t.dataset.add] = (log.foods[t.dataset.add] || 0) + 1 }
     else if (t.dataset.inc) { log.foods[t.dataset.inc] = (log.foods[t.dataset.inc] || 0) + 1 }

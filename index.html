@@ -214,6 +214,17 @@
   .qa:hover{border-color:var(--pine);background:var(--pine-soft)}
   .qa .kc{font-family:"Space Mono",monospace;font-size:.7rem;color:var(--ink-soft);font-weight:400}
   .qa .plus{color:var(--pine);font-weight:800}
+  .qa-wrap{display:inline-flex;align-items:stretch}
+  .qa-custom{border-style:dashed;border-color:var(--pine)}
+  .qa-x{border:1px solid var(--line);border-left:0;background:var(--paper);color:var(--ink-soft);border-radius:0 999px 999px 0;padding:0 9px;cursor:pointer;font-size:.95rem;line-height:1;font-family:inherit}
+  .qa-x:hover{color:var(--race);border-color:var(--race)}
+  .qa-custom{border-radius:999px 0 0 999px}
+  .custom-form{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .custom-form input,.custom-form select{background:var(--paper);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-family:inherit;font-size:.86rem}
+  .custom-form input:focus,.custom-form select:focus{outline:2px solid var(--pine);outline-offset:1px;border-color:var(--pine)}
+  .custom-form #cfName{flex:1 1 150px}
+  .custom-form input[type=number]{width:84px}
+  .custom-hint{color:var(--ink-soft);font-size:.78rem;margin-top:10px}
 
   .logged{display:grid;gap:8px;margin-top:6px}
   .logged .empty{color:var(--ink-soft);font-size:.86rem;font-style:italic}
